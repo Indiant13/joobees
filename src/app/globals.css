@@ -1,0 +1,17 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg: 250 250 249;
+  --fg: 23 23 23;
+  --muted: 120 113 108;
+  --card: 255 255 255;
+  --border: 231 229 228;
+  --accent: 2 132 199;
+}
+
+body {
+  color: rgb(var(--fg));
+  background: rgb(var(--bg));
+}
