@@ -28,7 +28,9 @@ export function ProfilePortfolio({ profile }: ProfilePortfolioProps) {
           description: "Professional background and recommendations.",
         }
       : null,
-  ].filter(Boolean);
+  ].filter(
+    (item): item is NonNullable<typeof item> => item !== null,
+  );
 
   return (
     <section className="rounded-3xl border border-[rgb(var(--border))] bg-[rgb(var(--card))] p-6 shadow-sm">
