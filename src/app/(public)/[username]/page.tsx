@@ -7,10 +7,6 @@ import { ProfileStats } from "@/features/public-profile/components/ProfileStats"
 import { ProfilePortfolio } from "@/features/public-profile/components/ProfilePortfolio";
 import { ProfileShareBar } from "@/features/public-profile/components/ProfileShareBar";
 
-type PageProps = {
-  params: { username: string };
-};
-
 async function getPublicProfile(username: string): Promise<PublicProfileDTO> {
   const baseUrl = await getBaseUrl();
   const res = await fetch(`${baseUrl}/api/profile/${username}`, {
@@ -26,14 +22,17 @@ async function getPublicProfile(username: string): Promise<PublicProfileDTO> {
 
 export async function generateMetadata({
   params,
-}: PageProps): Promise<Metadata> {
+}: {
+  params: { username: string };
+}): Promise<Metadata> {
   const profile = await getPublicProfile(params.username);
   const baseUrl = await getBaseUrl();
   const url = `${baseUrl}/@${profile.username}`;
 
   return {
     title: `${profile.displayName} (@${profile.username}) | Joobees`,
-    description: profile.bio ?? `Remote worker profile for ${profile.displayName}.`,
+    description:
+      profile.bio ?? `Remote worker profile for ${profile.displayName}.`,
     alternates: {
       canonical: url,
     },
@@ -48,7 +47,11 @@ export async function generateMetadata({
   };
 }
 
-export default async function PublicProfilePage({ params }: PageProps) {
+export default async function PublicProfilePage({
+  params,
+}: {
+  params: { username: string };
+}) {
   const profile = await getPublicProfile(params.username);
   const baseUrl = await getBaseUrl();
   const shareUrl = `${baseUrl}/@${profile.username}`;
