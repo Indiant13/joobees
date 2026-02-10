@@ -21,7 +21,9 @@ function mapJobsToCards(
 
   const orderedJobs =
     rankedIds.length > 0
-      ? rankedIds.map((id) => jobMap.get(id)).filter(Boolean)
+      ? rankedIds
+          .map((id) => jobMap.get(id))
+          .filter((job): job is NonNullable<typeof job> => job !== undefined)
       : jobs;
 
   return orderedJobs.map((job) => {

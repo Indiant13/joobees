@@ -2,7 +2,7 @@ import { cookies } from "next/headers";
 import { getSessionCookieName, getSessionFromCookie } from "../auth-service";
 
 export async function GET() {
-  const store = cookies();
+  const store = await cookies();
   const value = store.get(getSessionCookieName())?.value;
   const session = getSessionFromCookie(value);
 
