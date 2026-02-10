@@ -6,12 +6,19 @@ import { ProfileOverview } from "@/features/public-profile/components/ProfileOve
 import { ProfileStats } from "@/features/public-profile/components/ProfileStats";
 import { ProfilePortfolio } from "@/features/public-profile/components/ProfilePortfolio";
 import { ProfileShareBar } from "@/features/public-profile/components/ProfileShareBar";
+import { notFound } from "next/navigation";
 
-async function getPublicProfile(username: string): Promise<PublicProfileDTO> {
+async function getPublicProfile(
+  username: string,
+): Promise<PublicProfileDTO | null> {
   const baseUrl = await getBaseUrl();
   const res = await fetch(`${baseUrl}/api/profile/${username}`, {
     cache: "no-store",
   });
+
+  if (res.status === 404) {
+    return null;
+  }
 
   if (!res.ok) {
     throw new Error("Failed to load profile");
@@ -23,9 +30,19 @@ async function getPublicProfile(username: string): Promise<PublicProfileDTO> {
 export async function generateMetadata({
   params,
 }: {
-  params: { username: string };
+  params: Promise<{ username: string }>;
 }): Promise<Metadata> {
-  const profile = await getPublicProfile(params.username);
+  const { username } = await params;
+  const profile = await getPublicProfile(username);
+  if (!profile) {
+    return {
+      title: "Profile not found | Joobees",
+      robots: {
+        index: false,
+        follow: false,
+      },
+    };
+  }
   const baseUrl = await getBaseUrl();
   const url = `${baseUrl}/@${profile.username}`;
 
@@ -50,9 +67,13 @@ export async function generateMetadata({
 export default async function PublicProfilePage({
   params,
 }: {
-  params: { username: string };
+  params: Promise<{ username: string }>;
 }) {
-  const profile = await getPublicProfile(params.username);
+  const { username } = await params;
+  const profile = await getPublicProfile(username);
+  if (!profile) {
+    notFound();
+  }
   const baseUrl = await getBaseUrl();
   const shareUrl = `${baseUrl}/@${profile.username}`;
 

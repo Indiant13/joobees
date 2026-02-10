@@ -25,7 +25,6 @@ export default function RootLayout({
           <Header
             title={BRAND.name}
             subtitle={BRAND.tagline}
-            postJobHref="#"
           />
           {children}
           <Footer

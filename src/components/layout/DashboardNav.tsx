@@ -38,6 +38,12 @@ export function DashboardNav() {
 
   return (
     <nav className="flex flex-col gap-2" aria-label="Dashboard navigation">
+      <Link
+        href="/"
+        className="rounded-xl border border-transparent px-3 py-2 text-sm text-[rgb(var(--muted))] transition hover:border-[rgb(var(--border))] hover:bg-[rgb(var(--card))] hover:text-[rgb(var(--fg))]"
+      >
+        ← Back to home
+      </Link>
       {NAV_ITEMS.map((item) => (
         <DashboardNavItem
           key={item.href}
