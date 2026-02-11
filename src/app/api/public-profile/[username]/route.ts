@@ -22,7 +22,7 @@ export async function GET(
   const payload: PublicProfileDTO = {
     username: record.username,
     displayName: record.displayName,
-    publicUrl: `${baseUrl}/@${slug}`,
+    publicUrl: `${baseUrl}/u/${slug}`,
     bio: visibility.showBio ? record.bio : undefined,
     avatarUrl: visibility.showAvatar ? record.avatarUrl ?? undefined : undefined,
     location: visibility.showLocation ? record.location ?? undefined : undefined,

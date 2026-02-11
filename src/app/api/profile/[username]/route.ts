@@ -33,7 +33,7 @@ export async function GET(
 
   const baseUrl = await getBaseUrl();
   // publicUrl is part of the public profile contract and is constructed server-side for sharing.
-  const publicUrl = `${baseUrl}/@${MOCK_PROFILE.username}`;
+  const publicUrl = `${baseUrl}/u/${MOCK_PROFILE.username}`;
 
   return Response.json(
     {

@@ -28,7 +28,7 @@ export function ApplicantsGrid({ data }: ApplicantsGridProps) {
       {data.applicants.map((applicant) => (
         <Link
           key={applicant.id}
-          href={`/@${applicant.username}`}
+          href={`/u/${applicant.username}`}
           className="rounded-2xl border border-[rgb(var(--border))] p-4 transition hover:border-blue-500/40 hover:bg-blue-50/20"
         >
           <div className="flex items-center gap-3">

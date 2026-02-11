@@ -34,10 +34,7 @@ export async function generateMetadata({
   params: Promise<{ username: string }>;
 }): Promise<Metadata> {
   const { username } = await params;
-  const normalizedUsername = username.startsWith("@")
-    ? username.slice(1)
-    : username;
-  const profile = await getPublicProfile(normalizedUsername);
+  const profile = await getPublicProfile(username);
   if (!profile) {
     return {
       title: "Profile not found | Joobees",
@@ -73,10 +70,7 @@ export default async function PublicProfilePage({
   params: Promise<{ username: string }>;
 }) {
   const { username } = await params;
-  const normalizedUsername = username.startsWith("@")
-    ? username.slice(1)
-    : username;
-  const profile = await getPublicProfile(normalizedUsername);
+  const profile = await getPublicProfile(username);
   if (!profile) {
     notFound();
   }
