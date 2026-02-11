@@ -1,6 +1,6 @@
 import type { PublicProfileDTO } from "@/types/publicProfile";
 import { getPublicProfileRecord } from "@/app/api/public-profile/mock-services/public-profile";
-import { getVisibilitySettings } from "@/app/api/me/visibility/mock-service";
+import { getProfileVisibilitySettings } from "@/app/api/me/profile/visibility/mock-service";
 import { getBaseUrl } from "@/lib/getBaseUrl";
 import { resolvePublicProfileSlug } from "@/lib/slugService";
 
@@ -15,7 +15,7 @@ export async function GET(
     return new Response(null, { status: 404 });
   }
 
-  const visibility = getVisibilitySettings();
+  const visibility = getProfileVisibilitySettings();
   const baseUrl = await getBaseUrl();
   const slug = resolvePublicProfileSlug(record.username);
 
@@ -26,10 +26,28 @@ export async function GET(
     bio: visibility.showBio ? record.bio : undefined,
     avatarUrl: visibility.showAvatar ? record.avatarUrl ?? undefined : undefined,
     location: visibility.showLocation ? record.location ?? undefined : undefined,
-    timezone: visibility.showTimezone ? record.timezone ?? undefined : undefined,
-    links: visibility.showLinks ? record.links : {},
-    badges: visibility.showBadges ? record.badges : [],
-    stats: visibility.showStats ? record.stats : { savedJobs: 0, appliedJobs: 0 },
+    timezone: visibility.showLocation ? record.timezone ?? undefined : undefined,
+    skills: visibility.showSkills ? record.skills : undefined,
+    languages: visibility.showLanguages ? record.languages : undefined,
+    availability: visibility.showAvailability ? record.availability : undefined,
+    lastSeen: visibility.showLastSeen ? record.lastSeen : undefined,
+    portfolio: visibility.showPortfolio
+      ? {
+          employment: visibility.showEmployment
+            ? record.portfolio.employment
+            : undefined,
+          education: visibility.showEducation
+            ? record.portfolio.education
+            : undefined,
+        }
+      : undefined,
+    links: {
+      website: visibility.showWebsite ? record.links.website : undefined,
+      github: visibility.showGithub ? record.links.github : undefined,
+      linkedin: visibility.showLinkedin ? record.links.linkedin : undefined,
+    },
+    badges: record.badges,
+    stats: record.stats,
     updatedAt: record.updatedAt,
   };
 

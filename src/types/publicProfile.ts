@@ -6,6 +6,34 @@ export interface PublicProfileDTO {
   avatarUrl?: string;
   location?: string;
   timezone?: string;
+  skills?: string[];
+  languages?: string[];
+  availability?: {
+    availableForWork: boolean;
+    availableFrom?: string;
+    preferredTimezones?: string[];
+    minAnnualUsd?: string;
+    minHourlyUsd?: string;
+  };
+  lastSeen?: string;
+  portfolio?: {
+    employment?: {
+      id: string;
+      title: string;
+      organization: string;
+      start: string;
+      end?: string;
+      summary?: string;
+    }[];
+    education?: {
+      id: string;
+      title: string;
+      organization: string;
+      start: string;
+      end?: string;
+      summary?: string;
+    }[];
+  };
   links: {
     website?: string;
     github?: string;
