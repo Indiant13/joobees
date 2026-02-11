@@ -3,6 +3,7 @@ import type { PublicProfileDTO } from "@/types/publicProfile";
 const MOCK_PROFILE: PublicProfileDTO = {
   username: "gina",
   displayName: "Gina Urban",
+  publicUrl: "/@gina",
   bio: "Remote product designer focused on fintech and collaboration tools.",
   avatarUrl: undefined,
   location: "Germany",
