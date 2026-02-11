@@ -5,6 +5,7 @@ import { Footer } from "@/components/footer/Footer";
 import { FOOTER_LINKS } from "@/components/footer/Footer.links";
 import { AuthProvider } from "@/features/auth/AuthProvider";
 import { AuthModal } from "@/features/auth/AuthModal";
+import { MotionLayout } from "@/components/layout/MotionLayout";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -22,21 +23,22 @@ export default function RootLayout({
       <body>
         <div id="modal-root" />
         <AuthProvider>
-          <Header
-            title={BRAND.name}
-            subtitle={BRAND.tagline}
-          />
-          {children}
-          <Footer
-            brandName={BRAND.name}
-            tagline={BRAND.tagline}
-            links={FOOTER_LINKS}
-            copyright={`© ${new Date().getFullYear()} ${BRAND.name}`}
-          />
+          <MotionLayout>
+            <Header
+              title={BRAND.name}
+              subtitle={BRAND.tagline}
+            />
+            {children}
+            <Footer
+              brandName={BRAND.name}
+              tagline={BRAND.tagline}
+              links={FOOTER_LINKS}
+              copyright={`© ${new Date().getFullYear()} ${BRAND.name}`}
+            />
+          </MotionLayout>
           <AuthModal />
         </AuthProvider>
       </body>
     </html>
   );
 }
-

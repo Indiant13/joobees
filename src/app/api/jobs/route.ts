@@ -3,7 +3,7 @@ import type { JobPayload } from "@/features/post-job/types";
 export async function POST(request: Request) {
   const body = (await request.json()) as JobPayload;
 
-  if (!body?.title || !body?.company) {
+  if (!body?.title || !body?.company?.name) {
     return Response.json(
       { error: "Missing required fields." },
       { status: 400 },

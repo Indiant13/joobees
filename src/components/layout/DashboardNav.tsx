@@ -33,7 +33,7 @@ function DashboardNavItem({ label, href, isActive }: DashboardNavItemProps) {
   );
 }
 
-export function DashboardNav() {
+export function DashboardNav({ showPostedJobs }: { showPostedJobs?: boolean }) {
   const pathname = usePathname();
 
   return (
@@ -44,6 +44,13 @@ export function DashboardNav() {
       >
         ← Back to home
       </Link>
+      {showPostedJobs ? (
+        <DashboardNavItem
+          label="Posted jobs"
+          href="/dashboard/posted-jobs"
+          isActive={pathname.startsWith("/dashboard/posted-jobs")}
+        />
+      ) : null}
       {NAV_ITEMS.map((item) => (
         <DashboardNavItem
           key={item.href}

@@ -7,12 +7,13 @@ import { ProfileStats } from "@/features/public-profile/components/ProfileStats"
 import { ProfilePortfolio } from "@/features/public-profile/components/ProfilePortfolio";
 import { ProfileShareBar } from "@/features/public-profile/components/ProfileShareBar";
 import { notFound } from "next/navigation";
+import { BackButton } from "@/components/navigation/BackButton";
 
 async function getPublicProfile(
   username: string,
 ): Promise<PublicProfileDTO | null> {
   const baseUrl = await getBaseUrl();
-  const res = await fetch(`${baseUrl}/api/profile/${username}`, {
+  const res = await fetch(`${baseUrl}/api/public-profile/${username}`, {
     cache: "no-store",
   });
 
@@ -43,8 +44,7 @@ export async function generateMetadata({
       },
     };
   }
-  const baseUrl = await getBaseUrl();
-  const url = `${baseUrl}/@${profile.username}`;
+  const url = profile.publicUrl;
 
   return {
     title: `${profile.displayName} (@${profile.username}) | Joobees`,
@@ -74,13 +74,13 @@ export default async function PublicProfilePage({
   if (!profile) {
     notFound();
   }
-  const baseUrl = await getBaseUrl();
-  const shareUrl = `${baseUrl}/@${profile.username}`;
+  const shareUrl = profile.publicUrl;
 
   return (
     <main className="min-h-screen">
       <section className="mx-auto grid max-w-6xl gap-6 px-4 py-10 lg:grid-cols-[2fr_1fr]">
         <div className="flex flex-col gap-6">
+          <BackButton label="Back to home" />
           <ProfileHero profile={profile} />
           <ProfileOverview profile={profile} />
           <ProfilePortfolio profile={profile} />

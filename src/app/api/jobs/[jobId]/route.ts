@@ -42,7 +42,10 @@ export async function GET(
   const payload: JobDetailsDTO = {
     id: job.id,
     title: job.title,
-    company,
+    company: {
+      name: company,
+      logoUrl: null,
+    },
     location: job.location,
     salary: job.salary,
     employmentType,
@@ -50,6 +53,25 @@ export async function GET(
     description: buildDescription(job.title, company, job.tags),
     tags: job.tags,
     applyUrl: `https://apply.joobees.com/${job.id}`,
+    promotions:
+      numericId % 7 === 0
+        ? ["featured", "highlight", "newsletter"]
+        : numericId % 5 === 0
+          ? ["featured"]
+          : numericId % 3 === 0
+            ? ["highlight"]
+            : undefined,
+    shareCard: {
+      company: {
+        name: company,
+        logoUrl: null,
+      },
+      shortUrl: `https://jb.ee/${job.id}`,
+      qrCodeUrl: `data:image/svg+xml;utf8,${encodeURIComponent(
+        `<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128"><rect width="128" height="128" fill="#ffffff"/><rect x="8" y="8" width="36" height="36" fill="#0f172a"/><rect x="84" y="8" width="36" height="36" fill="#0f172a"/><rect x="8" y="84" width="36" height="36" fill="#0f172a"/><rect x="52" y="52" width="24" height="24" fill="#0f172a"/><rect x="52" y="20" width="12" height="12" fill="#0f172a"/><rect x="64" y="68" width="12" height="12" fill="#0f172a"/><rect x="24" y="52" width="12" height="12" fill="#0f172a"/></svg>`,
+      )}`,
+      promoted: numericId % 3 === 0,
+    },
   };
 
   return Response.json(payload, {

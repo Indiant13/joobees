@@ -1,7 +1,34 @@
 import type { ReactNode } from "react";
 import { DashboardNav } from "@/components/layout/DashboardNav";
+import { getBaseUrl } from "@/lib/getBaseUrl";
+import type { EmployerOverviewDTO } from "@/types/employerOverview";
+import { cookies } from "next/headers";
 
-export default function DashboardLayout({ children }: { children: ReactNode }) {
+async function getEmployerOverview(): Promise<EmployerOverviewDTO> {
+  const baseUrl = await getBaseUrl();
+  const cookieStore = await cookies();
+  const cookieHeader = cookieStore
+    .getAll()
+    .map((cookie) => `${cookie.name}=${cookie.value}`)
+    .join("; ");
+  const res = await fetch(`${baseUrl}/api/employer/overview`, {
+    cache: "no-store",
+    headers: cookieHeader ? { cookie: cookieHeader } : undefined,
+  });
+
+  if (!res.ok) {
+    throw new Error("Failed to load employer overview");
+  }
+
+  return res.json();
+}
+
+export default async function DashboardLayout({
+  children,
+}: {
+  children: ReactNode;
+}) {
+  const overview = await getEmployerOverview();
   return (
     <main className="min-h-screen bg-[rgb(var(--bg))]">
       <section className="mx-auto grid max-w-6xl gap-6 px-4 py-10 md:grid-cols-[240px_1fr]">
@@ -10,7 +37,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
             Dashboard
           </h2>
           <div className="mt-4">
-            <DashboardNav />
+            <DashboardNav showPostedJobs={overview.hasPostedJobs} />
           </div>
         </aside>
         <section className="rounded-2xl border border-[rgb(var(--border))] bg-[rgb(var(--card))] p-6 shadow-sm">

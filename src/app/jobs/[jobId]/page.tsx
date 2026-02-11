@@ -7,6 +7,7 @@ import { JobMeta } from "@/components/job-details/JobMeta";
 import { JobDescription } from "@/components/job-details/JobDescription";
 import { JobTags } from "@/components/job-details/JobTags";
 import { JobApplyCard } from "@/components/job-details/JobApplyCard";
+import { JobShareCard } from "@/components/job-details/JobShareCard";
 
 async function getJobDetails(jobId: string): Promise<JobDetailsDTO | null> {
   const baseUrl = await getBaseUrl();
@@ -52,8 +53,9 @@ export default async function JobDetailsPage({
           <JobTags job={job} />
           <JobDescription job={job} />
         </div>
-        <div className="lg:pt-2">
+        <div className="flex flex-col gap-6 lg:pt-2">
           <JobApplyCard job={job} />
+          <JobShareCard data={job.shareCard} />
         </div>
       </section>
     </main>

@@ -3,7 +3,8 @@ export type JobExperience = "Entry" | "Mid" | "Senior" | "Lead";
 
 export type JobFormState = {
   title: string;
-  company: string;
+  companyName: string;
+  companyLogoUrl: string;
   location: string;
   type: JobType;
   description: string;
@@ -15,7 +16,10 @@ export type JobFormState = {
 
 export type JobPayload = {
   title: string;
-  company: string;
+  company: {
+    name: string;
+    logoUrl?: string;
+  };
   location: string;
   type: JobType;
   description: string;
@@ -32,8 +36,16 @@ export type JobCategory = {
 };
 
 export type JobPricingOption = {
-  id: string;
+  id: JobPromotionKey;
   title: string;
   description: string;
   priceUsd: number;
 };
+
+export type JobPromotionKey =
+  | "featured"
+  | "urgent"
+  | "newsletter"
+  | "social"
+  | "logo"
+  | "hot";

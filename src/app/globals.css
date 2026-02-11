@@ -9,9 +9,15 @@
   --card: 255 255 255;
   --border: 231 229 228;
   --accent: 2 132 199;
+  --hot-border: 239 68 68;
 }
 
 body {
   color: rgb(var(--fg));
   background: rgb(var(--bg));
+}
+
+.hot-job-border {
+  border-color: rgb(var(--hot-border) / 0.7);
+  box-shadow: 0 0 0 1px rgb(var(--hot-border) / 0.3);
 }

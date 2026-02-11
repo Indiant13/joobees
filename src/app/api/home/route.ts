@@ -28,16 +28,31 @@ function mapJobsToCards(
 
   return orderedJobs.map((job) => {
     const company = companyMap.get(job.companyId);
+    const index = Number.parseInt(job.id.replace(/\D/g, ""), 10) || 0;
+    const promotions =
+      index % 7 === 0
+        ? ["featured", "highlight"]
+        : index % 5 === 0
+          ? ["featured"]
+          : index % 3 === 0
+            ? ["highlight"]
+            : [];
+    const isHot = index % 9 === 0;
+    const hasCompanyLogo = index % 4 === 0;
 
     return {
       id: job.id,
       title: job.title,
       company: company?.name ?? "Confidential",
       companyLogo: company?.logoUrl ?? undefined,
+      companyLogoUrl: company?.logoUrl ?? undefined,
+      hasCompanyLogo,
       location: job.location,
       salary: job.salary ?? undefined,
       tags: job.tags,
       postedAt: job.postedAt,
+      promotions: promotions.length > 0 ? promotions : undefined,
+      isHot,
     };
   });
 }

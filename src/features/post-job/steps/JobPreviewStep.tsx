@@ -29,7 +29,7 @@ export function JobPreviewStep({
           {payload.title}
         </h3>
         <p className="mt-1 text-slate-600">
-          {payload.company} · {payload.location} · {payload.type}
+          {payload.company.name} · {payload.location} · {payload.type}
         </p>
         <p className="mt-3 whitespace-pre-wrap">{payload.description}</p>
         <div className="mt-3 flex flex-wrap gap-2">

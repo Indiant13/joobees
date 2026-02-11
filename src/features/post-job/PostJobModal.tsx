@@ -30,7 +30,8 @@ type PostJobModalProps = {
 
 const DEFAULT_FORM: JobFormState = {
   title: "",
-  company: "",
+  companyName: "",
+  companyLogoUrl: "",
   location: "",
   type: "Full-time",
   description: "",
@@ -50,6 +51,7 @@ export function PostJobModal({ isOpen, onClose }: PostJobModalProps) {
   const [selectedPricing, setSelectedPricing] = useState<string[]>([]);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
+  const [isUploadingLogo, setIsUploadingLogo] = useState(false);
 
   useEffect(() => {
     if (!isOpen) {
@@ -118,7 +120,7 @@ export function PostJobModal({ isOpen, onClose }: PostJobModalProps) {
       return;
     }
     let isMounted = true;
-    fetch("/api/jobs/pricing")
+    fetch("/api/jobs/pricing", { cache: "no-store" })
       .then((res) => (res.ok ? res.json() : []))
       .then((data: JobPricingOption[]) => {
         if (isMounted) {
@@ -161,7 +163,10 @@ export function PostJobModal({ isOpen, onClose }: PostJobModalProps) {
 
     return {
       title: formState.title,
-      company: formState.company,
+      company: {
+        name: formState.companyName,
+        logoUrl: formState.companyLogoUrl || undefined,
+      },
       location: formState.location,
       type: formState.type,
       description: formState.description,
@@ -215,6 +220,29 @@ export function PostJobModal({ isOpen, onClose }: PostJobModalProps) {
 
   const focusableSelectors =
     'a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])';
+
+  const handleLogoUpload = (file: File) => {
+    setIsUploadingLogo(true);
+    setSubmitError(null);
+    const formData = new FormData();
+    formData.append("file", file);
+    fetch("/api/uploads/company-logo", {
+      method: "POST",
+      body: formData,
+    })
+      .then((res) =>
+        res.ok ? res.json() : Promise.reject(new Error("Upload failed")),
+      )
+      .then((data: { logoUrl: string }) => {
+        setFormState((prev) => ({ ...prev, companyLogoUrl: data.logoUrl }));
+      })
+      .catch((error: Error) => {
+        setSubmitError(error.message);
+      })
+      .finally(() => {
+        setIsUploadingLogo(false);
+      });
+  };
 
   const handleDialogKeyDown = (event: ReactKeyboardEvent<HTMLDivElement>) => {
     if (event.key !== "Tab") {
@@ -305,6 +333,11 @@ export function PostJobModal({ isOpen, onClose }: PostJobModalProps) {
             <JobBasicsStep
               data={formState}
               onChange={(value) => setFormState((prev) => ({ ...prev, ...value }))}
+              onUploadLogo={handleLogoUpload}
+              onRemoveLogo={() =>
+                setFormState((prev) => ({ ...prev, companyLogoUrl: "" }))
+              }
+              isUploading={isUploadingLogo}
               onNext={() => setStep(1)}
             />
           ) : null}

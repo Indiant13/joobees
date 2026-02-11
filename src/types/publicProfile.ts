@@ -1,6 +1,7 @@
 export interface PublicProfileDTO {
   username: string;
   displayName: string;
+  publicUrl: string;
   bio?: string;
   avatarUrl?: string;
   location?: string;

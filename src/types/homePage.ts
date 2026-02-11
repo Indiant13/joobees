@@ -3,10 +3,14 @@ export interface JobCardDTO {
   title: string;
   company: string;
   companyLogo?: string;
+  companyLogoUrl?: string;
+  hasCompanyLogo?: boolean;
   location: string;
   salary?: string;
   tags: string[];
   postedAt: string;
+  promotions?: string[];
+  isHot?: boolean;
 }
 
 export interface HomePageResponse {
