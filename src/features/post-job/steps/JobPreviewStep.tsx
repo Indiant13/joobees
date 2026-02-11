@@ -8,19 +8,13 @@ type JobPreviewStepProps = {
     total: number;
     titles: string[];
   };
-  isSubmitting: boolean;
   error: string | null;
-  onBack: () => void;
-  onSubmit: () => void;
 };
 
 export function JobPreviewStep({
   payload,
   pricingSummary,
-  isSubmitting,
   error,
-  onBack,
-  onSubmit,
 }: JobPreviewStepProps) {
   return (
     <div className="flex flex-col gap-4">
@@ -74,23 +68,6 @@ export function JobPreviewStep({
           {error}
         </p>
       ) : null}
-      <div className="flex items-center justify-between gap-2">
-        <button
-          type="button"
-          onClick={onBack}
-          className="rounded-xl border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-600 transition hover:border-slate-300 hover:text-slate-800"
-        >
-          Back
-        </button>
-        <button
-          type="button"
-          onClick={onSubmit}
-          disabled={isSubmitting}
-          className="rounded-xl bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60"
-        >
-          {isSubmitting ? "Submitting..." : "Submit job"}
-        </button>
-      </div>
     </div>
   );
 }

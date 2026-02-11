@@ -8,7 +8,6 @@ type JobBasicsStepProps = {
   onUploadLogo: (file: File) => void;
   onRemoveLogo: () => void;
   isUploading: boolean;
-  onNext: () => void;
 };
 
 const JOB_TYPES: JobType[] = ["Full-time", "Part-time", "Contract", "Internship"];
@@ -19,7 +18,6 @@ export function JobBasicsStep({
   onUploadLogo,
   onRemoveLogo,
   isUploading,
-  onNext,
 }: JobBasicsStepProps) {
   return (
     <div className="flex flex-col gap-4">
@@ -129,15 +127,6 @@ export function JobBasicsStep({
             </option>
           ))}
         </select>
-      </div>
-      <div className="flex items-center justify-end gap-2">
-        <button
-          type="button"
-          onClick={onNext}
-          className="rounded-xl bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-blue-700"
-        >
-          Next
-        </button>
       </div>
     </div>
   );

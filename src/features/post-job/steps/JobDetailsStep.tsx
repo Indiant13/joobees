@@ -7,8 +7,6 @@ type JobDetailsStepProps = {
   categories: JobCategory[];
   onChange: (value: Partial<JobFormState>) => void;
   onAddTag: (tag: string) => void;
-  onNext: () => void;
-  onBack: () => void;
 };
 
 const EXPERIENCE_LEVELS: JobExperience[] = ["Entry", "Mid", "Senior", "Lead"];
@@ -18,8 +16,6 @@ export function JobDetailsStep({
   categories,
   onChange,
   onAddTag,
-  onNext,
-  onBack,
 }: JobDetailsStepProps) {
   return (
     <div className="flex flex-col gap-4">
@@ -104,22 +100,6 @@ export function JobDetailsStep({
             </option>
           ))}
         </select>
-      </div>
-      <div className="flex items-center justify-between gap-2">
-        <button
-          type="button"
-          onClick={onBack}
-          className="rounded-xl border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-600 transition hover:border-slate-300 hover:text-slate-800"
-        >
-          Back
-        </button>
-        <button
-          type="button"
-          onClick={onNext}
-          className="rounded-xl bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-blue-700"
-        >
-          Next
-        </button>
       </div>
     </div>
   );

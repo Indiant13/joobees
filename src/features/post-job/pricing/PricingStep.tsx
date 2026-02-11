@@ -6,9 +6,6 @@ type PricingStepProps = {
   options: JobPricingOption[];
   selectedIds: string[];
   onToggle: (id: string) => void;
-  onSkip: () => void;
-  onNext: () => void;
-  onBack: () => void;
 };
 
 const VALUE_BADGES: Record<string, string[]> = {
@@ -24,9 +21,6 @@ export function PricingStep({
   options,
   selectedIds,
   onToggle,
-  onSkip,
-  onNext,
-  onBack,
 }: PricingStepProps) {
   const total = options
     .filter((option) => selectedIds.includes(option.id))
@@ -101,31 +95,6 @@ export function PricingStep({
           Most employers choose at least one promotion.
         </p>
       ) : null}
-      <div className="flex flex-wrap items-center justify-between gap-2">
-        <button
-          type="button"
-          onClick={onBack}
-          className="rounded-xl border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-600 transition hover:border-slate-300 hover:text-slate-800"
-        >
-          Back
-        </button>
-        <div className="flex items-center gap-2">
-          <button
-            type="button"
-            onClick={onSkip}
-            className="rounded-xl border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-600 transition hover:border-slate-300 hover:text-slate-800"
-          >
-            Skip
-          </button>
-          <button
-            type="button"
-            onClick={onNext}
-            className="rounded-xl bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-blue-700"
-          >
-            Next
-          </button>
-        </div>
-      </div>
     </div>
   );
 }

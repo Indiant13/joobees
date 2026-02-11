@@ -1,15 +1,7 @@
 "use client";
 
-import { createPortal } from "react-dom";
-import {
-  useEffect,
-  useLayoutEffect,
-  useMemo,
-  useRef,
-  useState,
-  useTransition,
-  type KeyboardEvent as ReactKeyboardEvent,
-} from "react";
+import { useEffect, useMemo, useState, useTransition } from "react";
+import { ScrollableModal } from "@/components/modal/ScrollableModal";
 import type {
   JobCategory,
   JobFormState,
@@ -42,8 +34,6 @@ const DEFAULT_FORM: JobFormState = {
 };
 
 export function PostJobModal({ isOpen, onClose }: PostJobModalProps) {
-  const [portalTarget, setPortalTarget] = useState<HTMLElement | null>(null);
-  const dialogRef = useRef<HTMLDivElement | null>(null);
   const [step, setStep] = useState(0);
   const [formState, setFormState] = useState<JobFormState>(DEFAULT_FORM);
   const [categories, setCategories] = useState<JobCategory[]>([]);
@@ -52,36 +42,6 @@ export function PostJobModal({ isOpen, onClose }: PostJobModalProps) {
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
   const [isUploadingLogo, setIsUploadingLogo] = useState(false);
-
-  useEffect(() => {
-    if (!isOpen) {
-      return;
-    }
-    const previous = document.activeElement as HTMLElement | null;
-    dialogRef.current?.focus();
-    return () => {
-      previous?.focus();
-    };
-  }, [isOpen]);
-
-  useLayoutEffect(() => {
-    if (!isOpen) {
-      return;
-    }
-    const target = document.getElementById("modal-root");
-    setPortalTarget(target);
-  }, [isOpen]);
-
-  useEffect(() => {
-    if (!isOpen || !portalTarget) {
-      return;
-    }
-    const { overflow } = document.body.style;
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.body.style.overflow = overflow;
-    };
-  }, [isOpen, portalTarget]);
 
   useEffect(() => {
     if (!isOpen) {
@@ -136,24 +96,6 @@ export function PostJobModal({ isOpen, onClose }: PostJobModalProps) {
       isMounted = false;
     };
   }, [isOpen]);
-
-  useEffect(() => {
-    if (!isOpen || !portalTarget) {
-      return;
-    }
-
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        event.preventDefault();
-        onClose();
-      }
-    };
-
-    document.addEventListener("keydown", handleKeyDown);
-    return () => {
-      document.removeEventListener("keydown", handleKeyDown);
-    };
-  }, [isOpen, portalTarget, onClose]);
 
   const previewPayload: JobPayload = useMemo(() => {
     const tags = formState.tags
@@ -218,9 +160,6 @@ export function PostJobModal({ isOpen, onClose }: PostJobModalProps) {
     });
   };
 
-  const focusableSelectors =
-    'a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])';
-
   const handleLogoUpload = (file: File) => {
     setIsUploadingLogo(true);
     setSubmitError(null);
@@ -244,145 +183,121 @@ export function PostJobModal({ isOpen, onClose }: PostJobModalProps) {
       });
   };
 
-  const handleDialogKeyDown = (event: ReactKeyboardEvent<HTMLDivElement>) => {
-    if (event.key !== "Tab") {
-      return;
-    }
-    const focusable = dialogRef.current
-      ? Array.from(
-          dialogRef.current.querySelectorAll<HTMLElement>(focusableSelectors),
-        ).filter((el) => !el.hasAttribute("disabled"))
-      : [];
-
-    if (focusable.length === 0) {
-      return;
-    }
-
-    const first = focusable[0];
-    const last = focusable[focusable.length - 1];
-    const active = document.activeElement;
-
-    if (event.shiftKey && active === first) {
-      event.preventDefault();
-      last.focus();
-    } else if (!event.shiftKey && active === last) {
-      event.preventDefault();
-      first.focus();
-    }
-  };
-
-  if (!isOpen || !portalTarget) {
-    return null;
-  }
-
   const steps = FEATURES.PAID_JOBS
     ? ["basics", "details", "pricing", "preview"]
     : ["basics", "details", "preview"];
   const currentStep = steps[step];
+  const isPreview = currentStep === "preview";
 
-  return createPortal(
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 px-4 py-6"
-      role="presentation"
-      onClick={() => onClose()}
-    >
-      <div
-        ref={dialogRef}
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="post-job-title"
-        aria-describedby="post-job-description"
-        tabIndex={-1}
-        onKeyDown={handleDialogKeyDown}
-        onClick={(event) => event.stopPropagation()}
-        className="w-full max-w-2xl rounded-2xl bg-white p-6 shadow-xl outline-none"
-      >
-        <div className="flex flex-col gap-1">
-          <div className="flex items-center justify-between">
-            <div>
-              <h2 id="post-job-title" className="text-lg font-semibold text-slate-900">
-                Post a job
-              </h2>
-              <p id="post-job-description" className="text-sm text-slate-500">
-                {currentStep === "basics"
-                  ? "Job basics"
-                  : currentStep === "details"
-                    ? "Job details"
-                    : currentStep === "pricing"
-                      ? "Pricing"
-                      : "Preview & submit"}
-              </p>
-            </div>
-            <button
-              type="button"
-              onClick={() => onClose()}
-              className="rounded-full border border-slate-200 px-3 py-1 text-xs text-slate-500 transition hover:border-slate-300 hover:text-slate-700"
-            >
-              Close
-            </button>
-          </div>
-          <div className="mt-4 h-1 w-full rounded-full bg-slate-100">
-            <div
-              className="h-1 rounded-full bg-blue-600 transition-all"
-              style={{ width: `${((step + 1) / steps.length) * 100}%` }}
-            />
-          </div>
-        </div>
-        <div className="mt-6">
-          {currentStep === "basics" ? (
-            <JobBasicsStep
-              data={formState}
-              onChange={(value) => setFormState((prev) => ({ ...prev, ...value }))}
-              onUploadLogo={handleLogoUpload}
-              onRemoveLogo={() =>
-                setFormState((prev) => ({ ...prev, companyLogoUrl: "" }))
-              }
-              isUploading={isUploadingLogo}
-              onNext={() => setStep(1)}
-            />
-          ) : null}
-          {currentStep === "details" ? (
-            <JobDetailsStep
-              data={formState}
-              categories={categories}
-              onChange={(value) => setFormState((prev) => ({ ...prev, ...value }))}
-              onAddTag={handleTagAdd}
-              onNext={() => setStep((prev) => prev + 1)}
-              onBack={() => setStep((prev) => Math.max(prev - 1, 0))}
-            />
-          ) : null}
-          {currentStep === "pricing" ? (
-            <PricingStep
-              options={pricingOptions}
-              selectedIds={selectedPricing}
-              onToggle={(id) =>
-                setSelectedPricing((prev) =>
-                  prev.includes(id)
-                    ? prev.filter((optionId) => optionId !== id)
-                    : [...prev, id],
-                )
-              }
-              onSkip={() => {
-                setSelectedPricing([]);
-                setStep((prev) => prev + 1);
-              }}
-              onNext={() => setStep((prev) => prev + 1)}
-              onBack={() => setStep((prev) => Math.max(prev - 1, 0))}
-            />
-          ) : null}
-          {currentStep === "preview" ? (
-            <JobPreviewStep
-              payload={previewPayload}
-              pricingSummary={pricingSummary ?? undefined}
-              isSubmitting={isPending}
-              error={submitError}
-              onBack={() => setStep((prev) => Math.max(prev - 1, 0))}
-              onSubmit={handleSubmit}
-            />
-          ) : null}
-        </div>
+  const footer = (
+    <div className="flex flex-wrap items-center justify-between gap-2">
+      <div className="flex items-center gap-2">
+        {step > 0 ? (
+          <button
+            type="button"
+            onClick={() => setStep((prev) => Math.max(prev - 1, 0))}
+            className="rounded-xl border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-600 transition hover:border-slate-300 hover:text-slate-800"
+          >
+            Back
+          </button>
+        ) : null}
       </div>
-    </div>,
-    portalTarget,
+      <div className="flex items-center gap-2">
+        {currentStep === "pricing" ? (
+          <button
+            type="button"
+            onClick={() => {
+              setSelectedPricing([]);
+              setStep((prev) => prev + 1);
+            }}
+            className="rounded-xl border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-600 transition hover:border-slate-300 hover:text-slate-800"
+          >
+            Skip
+          </button>
+        ) : null}
+        <button
+          type="button"
+          onClick={() => {
+            if (isPreview) {
+              handleSubmit();
+              return;
+            }
+            setStep((prev) => Math.min(prev + 1, steps.length - 1));
+          }}
+          disabled={isPreview ? isPending : false}
+          className="rounded-xl bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60"
+        >
+          {isPreview ? (isPending ? "Submitting..." : "Submit job") : "Next"}
+        </button>
+      </div>
+    </div>
+  );
+
+  return (
+    <ScrollableModal
+      isOpen={isOpen}
+      onClose={onClose}
+      title="Post a job"
+      description={
+        currentStep === "basics"
+          ? "Job basics"
+          : currentStep === "details"
+            ? "Job details"
+            : currentStep === "pricing"
+              ? "Pricing"
+              : "Preview & submit"
+      }
+      footer={footer}
+      maxWidthClassName="md:max-w-2xl"
+      contentClassName="pb-2"
+    >
+      <div className="h-1 w-full rounded-full bg-slate-100">
+        <div
+          className="h-1 rounded-full bg-blue-600 transition-all"
+          style={{ width: `${((step + 1) / steps.length) * 100}%` }}
+        />
+      </div>
+      <div className="mt-5">
+        {currentStep === "basics" ? (
+          <JobBasicsStep
+            data={formState}
+            onChange={(value) => setFormState((prev) => ({ ...prev, ...value }))}
+            onUploadLogo={handleLogoUpload}
+            onRemoveLogo={() =>
+              setFormState((prev) => ({ ...prev, companyLogoUrl: "" }))
+            }
+            isUploading={isUploadingLogo}
+          />
+        ) : null}
+        {currentStep === "details" ? (
+          <JobDetailsStep
+            data={formState}
+            categories={categories}
+            onChange={(value) => setFormState((prev) => ({ ...prev, ...value }))}
+            onAddTag={handleTagAdd}
+          />
+        ) : null}
+        {currentStep === "pricing" ? (
+          <PricingStep
+            options={pricingOptions}
+            selectedIds={selectedPricing}
+            onToggle={(id) =>
+              setSelectedPricing((prev) =>
+                prev.includes(id)
+                  ? prev.filter((optionId) => optionId !== id)
+                  : [...prev, id],
+              )
+            }
+          />
+        ) : null}
+        {currentStep === "preview" ? (
+          <JobPreviewStep
+            payload={previewPayload}
+            pricingSummary={pricingSummary ?? undefined}
+            error={submitError}
+          />
+        ) : null}
+      </div>
+    </ScrollableModal>
   );
 }
