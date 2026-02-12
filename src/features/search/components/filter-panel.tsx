@@ -272,13 +272,13 @@ export function FilterPanel({
             buttonRef={professionButtonRef}
           />
           <MobileFilterButton
-            label="Programming Languages"
+            label="Tech Stack"
             count={filters.languages.length}
             onClick={() => setActiveMobileFilter("language")}
             buttonRef={languageButtonRef}
           />
           <MobileFilterButton
-            label="Spoken Languages"
+            label="Languages"
             count={filters.spokenLanguages.length}
             onClick={() => setActiveMobileFilter("spoken-language")}
             buttonRef={spokenLanguageButtonRef}
@@ -341,7 +341,7 @@ export function FilterPanel({
       <MobileFilterModal
         isOpen={activeMobileFilter === "language"}
         onClose={() => setActiveMobileFilter(null)}
-        title="Programming Languages"
+        title="Tech Stack"
         triggerRef={languageButtonRef}
       >
         <div className="max-h-72 overflow-y-auto pr-2">
@@ -366,7 +366,7 @@ export function FilterPanel({
       <MobileFilterModal
         isOpen={activeMobileFilter === "spoken-language"}
         onClose={() => setActiveMobileFilter(null)}
-        title="Spoken Languages"
+        title="Languages"
         triggerRef={spokenLanguageButtonRef}
       >
         <div className="max-h-72 overflow-y-auto pr-2">

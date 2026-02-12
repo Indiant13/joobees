@@ -50,10 +50,10 @@ describe("FilterBar", () => {
       name: /profession/i,
     })[0];
     const languageButton = screen.getAllByRole("button", {
-      name: /programming language/i,
+      name: /tech stack/i,
     })[0];
     const spokenButton = screen.getAllByRole("button", {
-      name: /spoken language/i,
+      name: /^languages$/i,
     })[0];
     const locationButton = screen.getAllByRole("button", { name: /location/i })[0];
 
@@ -88,7 +88,7 @@ describe("FilterBar", () => {
     const user = userEvent.setup();
 
     await user.click(
-      screen.getAllByRole("button", { name: /programming language/i })[0],
+      screen.getAllByRole("button", { name: /tech stack/i })[0],
     );
 
     PROGRAMMING_LANGUAGE_OPTIONS.forEach((language) => {
@@ -101,7 +101,7 @@ describe("FilterBar", () => {
     const user = userEvent.setup();
 
     await user.click(
-      screen.getAllByRole("button", { name: /spoken language/i })[0],
+      screen.getAllByRole("button", { name: /^languages$/i })[0],
     );
 
     SPOKEN_LANGUAGE_OPTIONS.forEach((language) => {
@@ -140,8 +140,8 @@ describe("FilterBar", () => {
     modalRoot.setAttribute("id", "modal-root");
     document.body.appendChild(modalRoot);
 
-    await user.click(screen.getByRole("button", { name: /open spoken languages mobile filter/i }));
-    const modal = screen.getByRole("dialog", { name: "Spoken Languages" });
+    await user.click(screen.getByRole("button", { name: /open languages mobile filter/i }));
+    const modal = screen.getByRole("dialog", { name: "Languages" });
     const scrollContainer = modal.querySelector(".max-h-72");
 
     expect(scrollContainer).toBeInTheDocument();

@@ -21,7 +21,7 @@ export function ProgrammingLanguageFilter({
 }: ProgrammingLanguageFilterProps) {
   return (
     <FilterDropdown
-      label="Programming Language"
+      label="Tech Stack"
       count={selected.length}
       isOpen={isOpen}
       onToggle={onToggle}

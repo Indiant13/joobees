@@ -21,7 +21,7 @@ export function SpokenLanguageFilter({
 }: SpokenLanguageFilterProps) {
   return (
     <FilterDropdown
-      label="Spoken Language"
+      label="Languages"
       count={selected.length}
       isOpen={isOpen}
       onToggle={onToggle}
