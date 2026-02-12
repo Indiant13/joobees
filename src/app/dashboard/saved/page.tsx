@@ -1,10 +1,12 @@
+import { SavedJobsList } from "@/features/saved-jobs/SavedJobsList";
+
 export default function DashboardSavedPage() {
   return (
     <div>
       <h1 className="text-2xl font-semibold">Saved</h1>
-      <p className="mt-2 text-sm text-[rgb(var(--muted))]">
-        Saved items placeholder.
-      </p>
+      <div className="mt-4">
+        <SavedJobsList />
+      </div>
     </div>
   );
 }

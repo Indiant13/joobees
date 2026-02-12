@@ -1,3 +1,5 @@
+import { createCompanyLogoUrl } from "@/services/jobs.service";
+
 export async function POST(request: Request) {
   const formData = await request.formData();
   const file = formData.get("file");
@@ -6,8 +8,7 @@ export async function POST(request: Request) {
     return Response.json({ error: "Missing file." }, { status: 400 });
   }
 
-  const filename = encodeURIComponent(file.name);
-  const logoUrl = `https://cdn.joobees.com/uploads/${Date.now()}-${filename}`;
+  const logoUrl = createCompanyLogoUrl(file.name);
 
   return Response.json(
     {

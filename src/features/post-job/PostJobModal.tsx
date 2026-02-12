@@ -14,6 +14,7 @@ import { JobPreviewStep } from "@/features/post-job/steps/JobPreviewStep";
 import { createJobAction } from "@/features/post-job/actions";
 import { PricingStep } from "@/features/post-job/pricing/PricingStep";
 import { FEATURES } from "@/config/features";
+import { PROFESSION_OPTIONS } from "@/features/job-search-filters/config/professions";
 
 type PostJobModalProps = {
   isOpen: boolean;
@@ -26,11 +27,15 @@ const DEFAULT_FORM: JobFormState = {
   companyLogoUrl: "",
   location: "",
   type: "Full-time",
+  profession: PROFESSION_OPTIONS[0]?.value ?? "software-developer",
   description: "",
   tags: "",
   salaryMin: "",
   salaryMax: "",
   experience: "Mid",
+  benefits: [],
+  languages: [],
+  spokenLanguages: [],
 };
 
 export function PostJobModal({ isOpen, onClose }: PostJobModalProps) {
@@ -111,8 +116,15 @@ export function PostJobModal({ isOpen, onClose }: PostJobModalProps) {
       },
       location: formState.location,
       type: formState.type,
+      profession: formState.profession,
       description: formState.description,
       tags,
+      benefits: formState.benefits.length > 0 ? formState.benefits : undefined,
+      skills: formState.languages.length > 0 ? formState.languages : undefined,
+      skillsLanguages:
+        formState.spokenLanguages.length > 0
+          ? formState.spokenLanguages
+          : undefined,
       salaryMin: formState.salaryMin || undefined,
       salaryMax: formState.salaryMax || undefined,
       experience: formState.experience,

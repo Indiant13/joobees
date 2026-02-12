@@ -1,26 +1,20 @@
 import type { JobPayload } from "@/features/post-job/types";
+import { submitJob } from "@/services/jobs.service";
 
 export async function POST(request: Request) {
   const body = (await request.json()) as JobPayload;
+  const result = submitJob(body);
 
-  if (!body?.title || !body?.company?.name) {
+  if (!result.ok) {
     return Response.json(
-      { error: "Missing required fields." },
+      { error: result.error },
       { status: 400 },
     );
   }
 
-  return Response.json(
-    {
-      id: `job_${Date.now()}`,
-      status: "submitted",
-      pricingOptionIds: body.pricingOptionIds ?? [],
-      receivedAt: new Date().toISOString(),
+  return Response.json(result.data, {
+    headers: {
+      "Cache-Control": "no-store",
     },
-    {
-      headers: {
-        "Cache-Control": "no-store",
-      },
-    },
-  );
+  });
 }

@@ -1,5 +1,5 @@
-import type { JobCardDTO } from "@/types/homePage";
+import type { JobDTO } from "@/types/dto/JobDTO";
 
 export type JobGridProps = {
-  jobs: JobCardDTO[];
+  jobs: JobDTO[];
 };

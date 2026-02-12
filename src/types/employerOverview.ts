@@ -1,8 +1,1 @@
-export type EmployerOverviewDTO = {
-  hasPostedJobs: boolean;
-  totalPostedJobs: number;
-  reporting: {
-    cadence: "daily" | "weekly";
-    nextReportAt: string;
-  };
-};
+export type { EmployerStatsDTO as EmployerOverviewDTO } from "@/types/dto/EmployerStatsDTO";

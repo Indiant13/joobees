@@ -1,12 +1,12 @@
 import type { EmployerPostedJobDetailsDTO } from "@/types/employerPostedJobs";
-import { getEmployerJobById } from "@/app/api/employer/mock-services/job-activity";
+import { getEmployerPostedJobDetails } from "@/services/jobs.service";
 
 export async function GET(
   _request: Request,
   { params }: { params: Promise<{ jobId: string }> },
 ) {
   const { jobId } = await params;
-  const job = getEmployerJobById(jobId);
+  const job = getEmployerPostedJobDetails(jobId);
 
   if (!job) {
     return new Response(null, { status: 404 });

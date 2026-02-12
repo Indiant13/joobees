@@ -16,23 +16,11 @@ type PublicProfileRecord = {
   };
   lastSeen: string;
   portfolio: {
-    employment: {
-      id: string;
-      title: string;
-      organization: string;
-      start: string;
-      end?: string;
-      summary?: string;
-    }[];
-    education: {
-      id: string;
-      title: string;
-      organization: string;
-      start: string;
-      end?: string;
-      summary?: string;
-    }[];
-  };
+    id: string;
+    url: string;
+    description: string;
+    createdAt: string;
+  }[];
   links: {
     website?: string;
     github?: string;
@@ -64,28 +52,7 @@ const PROFILES: PublicProfileRecord[] = [
       minHourlyUsd: "60",
     },
     lastSeen: "2026-02-10T18:30:00.000Z",
-    portfolio: {
-      employment: [
-        {
-          id: "emp-1",
-          title: "Senior Product Designer",
-          organization: "Nimbus Labs",
-          start: "2023",
-          end: "Present",
-          summary: "Led design systems and onboarding.",
-        },
-      ],
-      education: [
-        {
-          id: "edu-1",
-          title: "BA Industrial Design",
-          organization: "Politecnico di Milano",
-          start: "2016",
-          end: "2020",
-          summary: "Product design and research.",
-        },
-      ],
-    },
+    portfolio: [],
     links: {
       website: "https://gina.design",
       github: "https://github.com/gina",

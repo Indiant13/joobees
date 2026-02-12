@@ -1,6 +1,13 @@
 "use client";
 
-import type { JobCategory, JobFormState, JobExperience } from "@/features/post-job/types";
+import type {
+  JobCategory,
+  JobFormState,
+  JobExperience,
+} from "@/features/post-job/types";
+import { BENEFIT_OPTIONS } from "@/features/job-search-filters/config/benefits";
+import { PROGRAMMING_LANGUAGE_OPTIONS } from "@/features/job-search-filters/config/programmingLanguages";
+import { SPOKEN_LANGUAGE_OPTIONS } from "@/features/job-search-filters/config/spokenLanguages";
 
 type JobDetailsStepProps = {
   data: JobFormState;
@@ -100,6 +107,105 @@ export function JobDetailsStep({
             </option>
           ))}
         </select>
+      </div>
+      <div>
+        <label className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
+          Benefits
+        </label>
+        <div className="mt-3 max-h-56 overflow-y-auto rounded-xl border border-slate-200 p-3">
+          <div className="flex flex-col gap-2">
+            {BENEFIT_OPTIONS.map((benefit) => {
+              const isChecked = data.benefits.includes(benefit.value);
+              return (
+                <label
+                  key={benefit.value}
+                  className="flex cursor-pointer items-center gap-2 text-sm text-slate-700"
+                >
+                  <input
+                    type="checkbox"
+                    checked={isChecked}
+                    onChange={() =>
+                      onChange({
+                        benefits: isChecked
+                          ? data.benefits.filter(
+                              (value) => value !== benefit.value,
+                            )
+                          : [...data.benefits, benefit.value],
+                      })
+                    }
+                  />
+                  <span>{benefit.label}</span>
+                </label>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+      <div>
+        <label className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
+          Programming languages
+        </label>
+        <div className="mt-3 max-h-56 overflow-y-auto rounded-xl border border-slate-200 p-3">
+          <div className="flex flex-col gap-2">
+            {PROGRAMMING_LANGUAGE_OPTIONS.map((language) => {
+              const isChecked = data.languages.includes(language.value);
+              return (
+                <label
+                  key={language.value}
+                  className="flex cursor-pointer items-center gap-2 text-sm text-slate-700"
+                >
+                  <input
+                    type="checkbox"
+                    checked={isChecked}
+                    onChange={() =>
+                      onChange({
+                        languages: isChecked
+                          ? data.languages.filter(
+                              (value) => value !== language.value,
+                            )
+                          : [...data.languages, language.value],
+                      })
+                    }
+                  />
+                  <span>{language.label}</span>
+                </label>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+      <div>
+        <label className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
+          Spoken languages
+        </label>
+        <div className="mt-3 max-h-56 overflow-y-auto rounded-xl border border-slate-200 p-3">
+          <div className="flex flex-col gap-2">
+            {SPOKEN_LANGUAGE_OPTIONS.map((language) => {
+              const isChecked = data.spokenLanguages.includes(language.value);
+              return (
+                <label
+                  key={language.value}
+                  className="flex cursor-pointer items-center gap-2 text-sm text-slate-700"
+                >
+                  <input
+                    type="checkbox"
+                    checked={isChecked}
+                    onChange={() =>
+                      onChange({
+                        spokenLanguages: isChecked
+                          ? data.spokenLanguages.filter(
+                              (value) => value !== language.value,
+                            )
+                          : [...data.spokenLanguages, language.value],
+                      })
+                    }
+                  />
+                  <span>{language.label}</span>
+                </label>
+              );
+            })}
+          </div>
+        </div>
       </div>
     </div>
   );

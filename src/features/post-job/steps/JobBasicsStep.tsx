@@ -1,6 +1,7 @@
 "use client";
 
 import type { JobFormState, JobType } from "@/features/post-job/types";
+import { PROFESSION_OPTIONS } from "@/features/job-search-filters/config/professions";
 
 type JobBasicsStepProps = {
   data: JobFormState;
@@ -124,6 +125,25 @@ export function JobBasicsStep({
           {JOB_TYPES.map((type) => (
             <option key={type} value={type}>
               {type}
+            </option>
+          ))}
+        </select>
+      </div>
+      <div>
+        <label className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
+          Profession
+        </label>
+        <select
+          value={data.profession}
+          onChange={(event) =>
+            onChange({ profession: event.target.value as typeof data.profession })
+          }
+          className="mt-2 w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-blue-500"
+          required
+        >
+          {PROFESSION_OPTIONS.map((profession) => (
+            <option key={profession.value} value={profession.value}>
+              {profession.label}
             </option>
           ))}
         </select>

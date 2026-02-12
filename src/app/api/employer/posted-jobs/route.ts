@@ -1,9 +1,9 @@
 import type { EmployerPostedJobsDTO } from "@/types/employerPostedJobs";
-import { getEmployerJobs } from "@/app/api/employer/mock-services/job-activity";
+import { getEmployerPostedJobs } from "@/services/jobs.service";
 
 export async function GET() {
   const payload: EmployerPostedJobsDTO = {
-    jobs: getEmployerJobs(),
+    jobs: getEmployerPostedJobs(),
   };
 
   return Response.json(payload, {

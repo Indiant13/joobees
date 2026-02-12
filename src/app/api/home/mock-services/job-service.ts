@@ -1,8 +1,22 @@
+import { BENEFITS as BENEFIT_CONFIG } from "@/features/job-search-filters/config/benefits";
+import {
+  PROFESSIONS,
+} from "@/features/job-search-filters/config/professions";
+import { SPOKEN_LANGUAGES } from "@/features/job-search-filters/config/spokenLanguages";
+
 type JobServiceJob = {
   id: string;
   title: string;
   companyId: string;
   location: string;
+  region: string;
+  country: string;
+  benefits: string[];
+  profession: string;
+  skills: string[];
+  spokenLanguages: string[];
+  views: number;
+  applyCount: number;
   salary?: string | null;
   tags: string[];
   postedAt: string;
@@ -40,6 +54,25 @@ const LOCATIONS = [
   "Remote (APAC)",
 ];
 
+const REGIONS = ["Global", "North America", "Europe", "LATAM", "APAC"];
+
+const COUNTRIES = [
+  "United States",
+  "Canada",
+  "United Kingdom",
+  "Germany",
+  "Brazil",
+  "Mexico",
+  "Australia",
+  "Japan",
+  "India",
+  "France",
+];
+
+const BENEFITS = BENEFIT_CONFIG.map((benefit) => benefit.value);
+const PROFESSION_VALUES = PROFESSIONS.map((profession) => profession.value);
+const SPOKEN_LANGUAGE_VALUES = SPOKEN_LANGUAGES.map((language) => language.value);
+
 const TAGS = [
   ["React", "TypeScript", "Design Systems"],
   ["Figma", "Design", "UX"],
@@ -76,6 +109,16 @@ export function getMockJobs(): JobServiceJob[] {
     title,
     companyId: `company-${(index % 12) + 1}`,
     location: LOCATIONS[index % LOCATIONS.length],
+    region: REGIONS[index % REGIONS.length],
+    country: COUNTRIES[index % COUNTRIES.length],
+    benefits: BENEFITS.filter((_, benefitIndex) => benefitIndex % 3 === index % 3),
+    skills: TAGS[index % TAGS.length],
+    profession: PROFESSION_VALUES[index % PROFESSION_VALUES.length],
+    spokenLanguages: SPOKEN_LANGUAGE_VALUES.filter(
+      (_, languageIndex) => languageIndex % 4 === index % 4,
+    ),
+    views: 1200 - index * 37,
+    applyCount: 80 - index * 3,
     salary: SALARIES[index % SALARIES.length] ?? null,
     tags: TAGS[index % TAGS.length],
     postedAt: addDays(baseDate, -index),
