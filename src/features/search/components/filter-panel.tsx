@@ -223,7 +223,7 @@ export function FilterPanel({
                       : undefined,
                   })
                 }
-                className="w-full rounded-xl border border-slate-200 px-3 py-2 text-xs outline-none focus:border-blue-500"
+                className="w-full rounded-xl border border-slate-200 px-3 py-2 text-base outline-none focus:border-blue-500 md:text-xs"
               />
               <input
                 type="number"
@@ -237,7 +237,7 @@ export function FilterPanel({
                       : undefined,
                   })
                 }
-                className="w-full rounded-xl border border-slate-200 px-3 py-2 text-xs outline-none focus:border-blue-500"
+                className="w-full rounded-xl border border-slate-200 px-3 py-2 text-base outline-none focus:border-blue-500 md:text-xs"
               />
             </div>
           </FilterSection>
@@ -486,7 +486,7 @@ export function FilterPanel({
                       : undefined,
                   })
                 }
-                className="w-full rounded-xl border border-slate-200 px-3 py-2 text-xs outline-none focus:border-blue-500"
+                className="w-full rounded-xl border border-slate-200 px-3 py-2 text-base outline-none focus:border-blue-500 md:text-xs"
               />
               <input
                 type="number"
@@ -500,7 +500,7 @@ export function FilterPanel({
                       : undefined,
                   })
                 }
-                className="w-full rounded-xl border border-slate-200 px-3 py-2 text-xs outline-none focus:border-blue-500"
+                className="w-full rounded-xl border border-slate-200 px-3 py-2 text-base outline-none focus:border-blue-500 md:text-xs"
               />
             </div>
           </FilterSection>
@@ -682,7 +682,7 @@ function CustomCountrySelector({
             setInputValue(event.target.value);
             setSelectedSuggestion(null);
           }}
-          className="w-full rounded-xl border border-slate-200 px-3 py-2 text-xs outline-none focus:border-blue-500"
+          className="w-full rounded-xl border border-slate-200 px-3 py-2 text-base outline-none focus:border-blue-500 md:text-xs"
           aria-label="Other Country"
         />
         <button
