@@ -242,21 +242,6 @@ export function FilterBar() {
     router.replace(nextUrl, { scroll: false });
   }
 
-  function clearAll() {
-    updateFilters({
-      sort: activeFilters.sort,
-      professions: [],
-      languages: [],
-      spokenLanguages: [],
-      regions: [],
-      countries: [],
-      customLocation: undefined,
-      benefits: [],
-      minSalary: undefined,
-      maxSalary: undefined,
-    });
-  }
-
   return (
     <section className="mx-auto max-w-6xl px-4 py-6">
       <div className="rounded-2xl border border-[rgb(var(--border))] bg-[rgb(var(--card))] p-4 shadow-sm">
@@ -266,7 +251,6 @@ export function FilterBar() {
               filters={activeFilters}
               onChange={updateFilters}
               hasActiveFilters={hasActiveFilters}
-              onClearAll={clearAll}
             />
             <div className="hidden md:flex md:items-center md:gap-2">
               <SortControl
@@ -306,15 +290,6 @@ export function FilterBar() {
                 />
               </div>
             </div>
-            {hasActiveFilters ? (
-              <button
-                type="button"
-                onClick={clearAll}
-                className="hidden text-xs font-semibold uppercase tracking-[0.2em] text-slate-400 md:inline-flex"
-              >
-                Clear all
-              </button>
-            ) : null}
           </div>
           {chips.length > 0 ? (
             <div className="flex flex-wrap gap-2">

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import type { JobFilterState } from "@/lib/job-filters/types";
 import {
   COUNTRY_OPTIONS,
@@ -36,18 +37,44 @@ type FilterPanelProps = {
   filters: JobFilterState;
   onChange: (next: JobFilterState) => void;
   hasActiveFilters: boolean;
-  onClearAll: () => void;
 };
+
+const FILTER_QUERY_KEYS = [
+  "profession",
+  "professions",
+  "languages",
+  "spokenLanguages",
+  "region",
+  "regions",
+  "country",
+  "countries",
+  "custom-location",
+  "benefits",
+  "minSalary",
+  "maxSalary",
+] as const;
 
 export function FilterPanel({
   filters,
   onChange,
   hasActiveFilters,
-  onClearAll,
 }: FilterPanelProps) {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
   const dropdownContainerRef = useRef<HTMLDivElement | null>(null);
   const [activeFilter, setActiveFilter] = useState<ActiveFilter>(null);
   const [activeMobileFilter, setActiveMobileFilter] = useState<ActiveFilter>(null);
+
+  const clearAllFilters = () => {
+    const params = new URLSearchParams(searchParams.toString());
+    FILTER_QUERY_KEYS.forEach((key) => params.delete(key));
+    const queryString = params.toString();
+    const nextUrl = queryString ? `${pathname}?${queryString}` : pathname;
+    router.replace(nextUrl, { scroll: false });
+    setActiveFilter(null);
+    setActiveMobileFilter(null);
+  };
 
   useEffect(() => {
     if (!activeFilter) {
@@ -271,6 +298,15 @@ export function FilterPanel({
             </div>
           </FilterSection>
         </FilterDropdown>
+        {hasActiveFilters ? (
+          <button
+            type="button"
+            onClick={clearAllFilters}
+            className="rounded-xl bg-blue-600 px-3 py-2 text-xs font-semibold text-white transition hover:bg-blue-700"
+          >
+            Clear
+          </button>
+        ) : null}
       </div>
 
       <div className="flex flex-col gap-2 md:hidden">
@@ -309,16 +345,16 @@ export function FilterPanel({
             count={filters.benefits.length}
             onClick={() => setActiveMobileFilter("benefits")}
           />
+          {hasActiveFilters ? (
+            <button
+              type="button"
+              onClick={clearAllFilters}
+              className="rounded-xl bg-blue-600 px-3 py-2 text-xs font-semibold text-white transition hover:bg-blue-700"
+            >
+              Clear
+            </button>
+          ) : null}
         </div>
-        {hasActiveFilters ? (
-          <button
-            type="button"
-            onClick={onClearAll}
-            className="self-start text-xs font-semibold uppercase tracking-[0.2em] text-slate-400"
-          >
-            Clear all
-          </button>
-        ) : null}
       </div>
 
       <MobileFilterModal

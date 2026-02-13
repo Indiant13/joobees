@@ -66,7 +66,7 @@ export function MobileFilterModal({
         role="dialog"
         aria-modal="true"
         aria-label={title}
-        className="fixed inset-0 h-screen overflow-hidden bg-white"
+        className="mobile-filter-modal fixed inset-0 h-screen overflow-hidden bg-white"
         style={{ height: "100vh" }}
         onClick={(event) => event.stopPropagation()}
       >
@@ -91,6 +91,13 @@ export function MobileFilterModal({
             {children}
           </div>
         </div>
+        <style jsx global>{`
+          .mobile-filter-modal input,
+          .mobile-filter-modal textarea {
+            font-size: 16px;
+            line-height: normal;
+          }
+        `}</style>
       </div>
     </div>,
     portalTarget,
