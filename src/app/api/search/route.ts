@@ -1,4 +1,5 @@
 import type { SearchResultDTO } from "@/types/dto/SearchResultDTO";
+import type { SearchFiltersDTO } from "@/types/dto/SearchFiltersDTO";
 import { parseJobFilterQuery } from "@/lib/job-filters/parse";
 import { searchJobs } from "@/services/search.service";
 
@@ -6,7 +7,12 @@ export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const query = searchParams.get("q") ?? "";
   const filters = parseJobFilterQuery(searchParams);
-  const response: SearchResultDTO = searchJobs(query, filters);
+  const customLocation: SearchFiltersDTO["customLocation"] =
+    searchParams.get("custom-location")?.trim().toLowerCase() || undefined;
+  const response: SearchResultDTO = searchJobs(query, {
+    ...filters,
+    customLocation,
+  });
 
   return Response.json(response, {
     headers: {

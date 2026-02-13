@@ -15,6 +15,7 @@ type HomeQueryParams = {
   regions?: string;
   country?: string;
   countries?: string;
+  "custom-location"?: string;
   minSalary?: string;
   maxSalary?: string;
   benefits?: string;
@@ -64,6 +65,10 @@ async function getHomeData(
 
   if (paramsInput.countries) {
     params.set("countries", paramsInput.countries);
+  }
+
+  if (paramsInput["custom-location"]) {
+    params.set("custom-location", paramsInput["custom-location"]);
   }
 
   if (paramsInput.minSalary) {

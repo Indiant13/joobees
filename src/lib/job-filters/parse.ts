@@ -51,6 +51,8 @@ export function parseJobFilterQuery(params: URLSearchParams): JobFilterState {
   const spokenLanguages: SpokenLanguageValue[] = spokenLanguageList;
   const regions = parseList(params.get("region") ?? params.get("regions"));
   const countries = parseList(params.get("country") ?? params.get("countries"));
+  const customLocation =
+    params.get("custom-location")?.trim().toLowerCase() || undefined;
   const benefits = parseList(params.get("benefits")).filter(
     (benefit): benefit is BenefitValue =>
       BENEFIT_VALUES.has(benefit as BenefitValue),
@@ -65,6 +67,7 @@ export function parseJobFilterQuery(params: URLSearchParams): JobFilterState {
     spokenLanguages,
     regions,
     countries,
+    customLocation,
     benefits,
     minSalary,
     maxSalary,

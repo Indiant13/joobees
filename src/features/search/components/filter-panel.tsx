@@ -1,12 +1,13 @@
 "use client";
 
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import type { JobFilterState } from "@/lib/job-filters/types";
 import {
   COUNTRY_OPTIONS,
   REGION_OPTIONS,
   SALARY_PRESETS,
 } from "@/features/job-filters/constants";
+import { COUNTRY_AUTOCOMPLETE_OPTIONS } from "@/features/search/config/countries";
 import { BENEFIT_OPTIONS } from "@/features/job-search-filters/config/benefits";
 import { PROFESSION_OPTIONS } from "@/features/job-search-filters/config/professions";
 import { ProfessionFilter } from "@/features/job-search-filters/components/ProfessionFilter";
@@ -45,12 +46,6 @@ export function FilterPanel({
   onClearAll,
 }: FilterPanelProps) {
   const dropdownContainerRef = useRef<HTMLDivElement | null>(null);
-  const professionButtonRef = useRef<HTMLButtonElement | null>(null);
-  const languageButtonRef = useRef<HTMLButtonElement | null>(null);
-  const spokenLanguageButtonRef = useRef<HTMLButtonElement | null>(null);
-  const locationButtonRef = useRef<HTMLButtonElement | null>(null);
-  const salaryButtonRef = useRef<HTMLButtonElement | null>(null);
-  const benefitsButtonRef = useRef<HTMLButtonElement | null>(null);
   const [activeFilter, setActiveFilter] = useState<ActiveFilter>(null);
   const [activeMobileFilter, setActiveMobileFilter] = useState<ActiveFilter>(null);
 
@@ -133,7 +128,11 @@ export function FilterPanel({
         />
         <FilterDropdown
           label="Location"
-          count={filters.regions.length + filters.countries.length}
+          count={
+            filters.regions.length +
+            filters.countries.length +
+            (filters.customLocation ? 1 : 0)
+          }
           isOpen={activeFilter === "location"}
           onToggle={() =>
             setActiveFilter((prev) => (prev === "location" ? null : "location"))
@@ -170,6 +169,17 @@ export function FilterPanel({
                 onSelected={() => setActiveFilter(null)}
               />
             ))}
+          </FilterSection>
+          <FilterSection title="Other Country">
+            <CustomCountrySelector
+              value={filters.customLocation}
+              onSelect={(value) =>
+                onChange({
+                  ...filters,
+                  customLocation: value,
+                })
+              }
+            />
           </FilterSection>
         </FilterDropdown>
         <FilterDropdown
@@ -269,37 +279,35 @@ export function FilterPanel({
             label="Professions"
             count={filters.professions.length}
             onClick={() => setActiveMobileFilter("profession")}
-            buttonRef={professionButtonRef}
           />
           <MobileFilterButton
             label="Tech Stack"
             count={filters.languages.length}
             onClick={() => setActiveMobileFilter("language")}
-            buttonRef={languageButtonRef}
           />
           <MobileFilterButton
             label="Languages"
             count={filters.spokenLanguages.length}
             onClick={() => setActiveMobileFilter("spoken-language")}
-            buttonRef={spokenLanguageButtonRef}
           />
           <MobileFilterButton
             label="Location"
-            count={filters.regions.length + filters.countries.length}
+            count={
+              filters.regions.length +
+              filters.countries.length +
+              (filters.customLocation ? 1 : 0)
+            }
             onClick={() => setActiveMobileFilter("location")}
-            buttonRef={locationButtonRef}
           />
           <MobileFilterButton
             label="Salary"
             count={filters.minSalary || filters.maxSalary ? 1 : 0}
             onClick={() => setActiveMobileFilter("salary")}
-            buttonRef={salaryButtonRef}
           />
           <MobileFilterButton
             label="Benefits"
             count={filters.benefits.length}
             onClick={() => setActiveMobileFilter("benefits")}
-            buttonRef={benefitsButtonRef}
           />
         </div>
         {hasActiveFilters ? (
@@ -317,9 +325,8 @@ export function FilterPanel({
         isOpen={activeMobileFilter === "profession"}
         onClose={() => setActiveMobileFilter(null)}
         title="Professions"
-        triggerRef={professionButtonRef}
       >
-        <div className="max-h-72 overflow-y-auto pr-2">
+        <div className="pr-2">
           <div className="flex flex-col gap-2">
             {PROFESSION_OPTIONS.map((option) => (
               <CheckboxOption
@@ -342,9 +349,8 @@ export function FilterPanel({
         isOpen={activeMobileFilter === "language"}
         onClose={() => setActiveMobileFilter(null)}
         title="Tech Stack"
-        triggerRef={languageButtonRef}
       >
-        <div className="max-h-72 overflow-y-auto pr-2">
+        <div className="pr-2">
           <div className="flex flex-col gap-2">
             {PROGRAMMING_LANGUAGE_OPTIONS.map((option) => (
               <CheckboxOption
@@ -367,9 +373,8 @@ export function FilterPanel({
         isOpen={activeMobileFilter === "spoken-language"}
         onClose={() => setActiveMobileFilter(null)}
         title="Languages"
-        triggerRef={spokenLanguageButtonRef}
       >
-        <div className="max-h-72 overflow-y-auto pr-2">
+        <div className="pr-2">
           <div className="flex flex-col gap-2">
             {SPOKEN_LANGUAGE_OPTIONS.map((option) => (
               <CheckboxOption
@@ -395,7 +400,6 @@ export function FilterPanel({
         isOpen={activeMobileFilter === "location"}
         onClose={() => setActiveMobileFilter(null)}
         title="Location"
-        triggerRef={locationButtonRef}
       >
         <div className="flex flex-col gap-5">
           <FilterSection title="Regions">
@@ -428,6 +432,17 @@ export function FilterPanel({
               />
             ))}
           </FilterSection>
+          <FilterSection title="Other Country">
+            <CustomCountrySelector
+              value={filters.customLocation}
+              onSelect={(value) =>
+                onChange({
+                  ...filters,
+                  customLocation: value,
+                })
+              }
+            />
+          </FilterSection>
         </div>
       </MobileFilterModal>
 
@@ -435,7 +450,6 @@ export function FilterPanel({
         isOpen={activeMobileFilter === "salary"}
         onClose={() => setActiveMobileFilter(null)}
         title="Salary"
-        triggerRef={salaryButtonRef}
       >
         <div className="flex flex-col gap-4">
           <FilterSection title="Presets">
@@ -497,9 +511,8 @@ export function FilterPanel({
         isOpen={activeMobileFilter === "benefits"}
         onClose={() => setActiveMobileFilter(null)}
         title="Benefits"
-        triggerRef={benefitsButtonRef}
       >
-        <div className="max-h-72 overflow-y-auto pr-2">
+        <div className="pr-2">
           <div className="flex flex-col gap-2">
             {BENEFIT_OPTIONS.map((option) => (
               <CheckboxOption
@@ -525,16 +538,13 @@ function MobileFilterButton({
   label,
   count,
   onClick,
-  buttonRef,
 }: {
   label: string;
   count: number;
   onClick: () => void;
-  buttonRef: React.RefObject<HTMLButtonElement>;
 }) {
   return (
     <button
-      ref={buttonRef}
       type="button"
       onClick={onClick}
       aria-label={`Open ${label} mobile filter`}
@@ -627,5 +637,84 @@ function CheckboxOption({
       />
       <span>{label}</span>
     </label>
+  );
+}
+
+function CustomCountrySelector({
+  value,
+  onSelect,
+}: {
+  value?: string;
+  onSelect: (value?: string) => void;
+}) {
+  const [inputValue, setInputValue] = useState(value ?? "");
+  const [selectedSuggestion, setSelectedSuggestion] = useState<string | null>(
+    value ?? null,
+  );
+
+  useEffect(() => {
+    setInputValue(value ?? "");
+    setSelectedSuggestion(value ?? null);
+  }, [value]);
+
+  const normalizedInput = inputValue.trim().toLowerCase();
+  const suggestions = useMemo(() => {
+    if (!normalizedInput) {
+      return [];
+    }
+    return COUNTRY_AUTOCOMPLETE_OPTIONS.filter((country) =>
+      country.toLowerCase().includes(normalizedInput),
+    ).slice(0, 8);
+  }, [normalizedInput]);
+
+  const canSelect =
+    Boolean(selectedSuggestion) &&
+    selectedSuggestion?.toLowerCase() === normalizedInput;
+
+  return (
+    <div className="relative flex flex-col gap-2">
+      <div className="flex items-center gap-2">
+        <input
+          type="text"
+          placeholder="Type country name"
+          value={inputValue}
+          onChange={(event) => {
+            setInputValue(event.target.value);
+            setSelectedSuggestion(null);
+          }}
+          className="w-full rounded-xl border border-slate-200 px-3 py-2 text-xs outline-none focus:border-blue-500"
+          aria-label="Other Country"
+        />
+        <button
+          type="button"
+          onClick={() => {
+            if (canSelect && selectedSuggestion) {
+              onSelect(selectedSuggestion);
+            }
+          }}
+          disabled={!canSelect}
+          className="rounded-xl border border-slate-200 px-3 py-2 text-xs font-semibold text-slate-600 disabled:cursor-not-allowed disabled:opacity-50"
+        >
+          Select
+        </button>
+      </div>
+      {suggestions.length > 0 ? (
+        <div className="max-h-40 overflow-y-auto rounded-xl border border-slate-200 bg-white">
+          {suggestions.map((country) => (
+            <button
+              key={country}
+              type="button"
+              onClick={() => {
+                setInputValue(country);
+                setSelectedSuggestion(country);
+              }}
+              className="block w-full px-3 py-2 text-left text-xs text-slate-700 transition hover:bg-slate-50"
+            >
+              {country}
+            </button>
+          ))}
+        </div>
+      ) : null}
+    </div>
   );
 }

@@ -54,6 +54,7 @@ export function parseFiltersFromSearchParams(
   );
   const regions = parseList(params.get("region") ?? params.get("regions"));
   const countries = parseList(params.get("country") ?? params.get("countries"));
+  const customLocation = params.get("custom-location")?.trim().toLowerCase() || undefined;
   const benefits = parseList(params.get("benefits")).filter(
     (benefit): benefit is BenefitValue =>
       BENEFIT_VALUES.has(benefit as BenefitValue),
@@ -68,6 +69,7 @@ export function parseFiltersFromSearchParams(
     spokenLanguages,
     regions,
     countries,
+    customLocation,
     benefits,
     minSalary,
     maxSalary,
@@ -89,6 +91,7 @@ export function filtersToSearchParams(
   );
   const regions = filters.regions.map((region) => region.toLowerCase());
   const countries = filters.countries.map((country) => country.toLowerCase());
+  const customLocation = filters.customLocation?.trim().toLowerCase();
   const benefits = filters.benefits.map((benefit) => benefit.toLowerCase());
 
   if (professions.length > 0) {
@@ -122,6 +125,12 @@ export function filtersToSearchParams(
   } else {
     params.delete("country");
     params.delete("countries");
+  }
+
+  if (customLocation) {
+    params.set("custom-location", customLocation);
+  } else {
+    params.delete("custom-location");
   }
 
   if (benefits.length > 0) {

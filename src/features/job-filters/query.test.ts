@@ -13,6 +13,7 @@ describe("filtersToSearchParams", () => {
         spokenLanguages: ["english", "russian"],
         regions: [],
         countries: [],
+        customLocation: "argentina",
         benefits: [],
         minSalary: undefined,
         maxSalary: undefined,
@@ -25,6 +26,7 @@ describe("filtersToSearchParams", () => {
     );
     expect(result.get("languages")).toBe("python,go");
     expect(result.get("spokenLanguages")).toBe("english,russian");
+    expect(result.get("custom-location")).toBe("argentina");
     expect(result.get("sort")).toBe("latest");
   });
 
@@ -39,6 +41,7 @@ describe("filtersToSearchParams", () => {
         spokenLanguages: [],
         regions: [],
         countries: [],
+        customLocation: undefined,
         benefits: [],
         minSalary: undefined,
         maxSalary: undefined,

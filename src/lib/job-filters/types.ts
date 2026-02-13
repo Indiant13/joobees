@@ -15,6 +15,7 @@ export type JobFilterState = {
   spokenLanguages: SpokenLanguageValue[];
   regions: string[];
   countries: string[];
+  customLocation?: string;
   benefits: BenefitValue[];
   minSalary?: number;
   maxSalary?: number;

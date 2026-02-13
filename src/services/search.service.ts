@@ -5,6 +5,7 @@ import { applyJobFilters } from "@/lib/job-filters/apply";
 import { mapJobsToDTOs } from "@/services/jobs.service";
 import type { JobFilterState } from "@/lib/job-filters/types";
 import type { SearchResultDTO } from "@/types/dto/SearchResultDTO";
+import type { SearchFiltersDTO } from "@/types/dto/SearchFiltersDTO";
 import type { SortValue } from "@/features/job-sort/types/sort.types";
 import type { JobDTO } from "@/types/dto/JobDTO";
 
@@ -67,10 +68,37 @@ export function applySorting(jobs: JobDTO[], sort?: string): JobDTO[] {
   }
 }
 
-export function searchJobs(query: string, filters: JobFilterState): SearchResultDTO {
+function normalizeToken(value: string) {
+  return value.trim().toLowerCase();
+}
+
+function getLocationAwareFilters(
+  filters: JobFilterState & SearchFiltersDTO,
+): JobFilterState {
+  const customLocation = filters.customLocation
+    ? normalizeToken(filters.customLocation)
+    : "";
+  const mergedCountries = customLocation
+    ? Array.from(
+        new Set([...filters.countries.map(normalizeToken), customLocation]),
+      )
+    : filters.countries;
+
+  return {
+    ...filters,
+    countries: mergedCountries,
+    customLocation: customLocation || undefined,
+  };
+}
+
+export function searchJobs(
+  query: string,
+  filters: JobFilterState & SearchFiltersDTO,
+): SearchResultDTO {
   const jobs = getMockJobs();
-  const filteredJobs = applyJobFilters(jobs, filters);
-  const sort = filters.sort;
+  const effectiveFilters = getLocationAwareFilters(filters);
+  const filteredJobs = applyJobFilters(jobs, effectiveFilters);
+  const sort = effectiveFilters.sort;
   const companies = getMockCompanies(filteredJobs.map((job) => job.companyId));
   const search = getMockSearchResult(
     filteredJobs.map((job) => ({ id: job.id, title: job.title, tags: job.tags })),

@@ -52,6 +52,7 @@ function sanitizeFilters(filters: JobFilterState): JobFilterState {
     sort: filters.sort,
     regions: filters.regions,
     countries: filters.countries,
+    customLocation: filters.customLocation,
     benefits: filters.benefits,
     minSalary: filters.minSalary,
     maxSalary: filters.maxSalary,
@@ -175,6 +176,18 @@ export function FilterBar() {
       });
     });
 
+    if (activeFilters.customLocation) {
+      items.push({
+        id: "custom-location",
+        label: `Other Country: ${activeFilters.customLocation}`,
+        onRemove: () =>
+          updateFilters({
+            ...activeFilters,
+            customLocation: undefined,
+          }),
+      });
+    }
+
     if (activeFilters.minSalary || activeFilters.maxSalary) {
       items.push({
         id: "salary",
@@ -218,6 +231,7 @@ export function FilterBar() {
     activeFilters.spokenLanguages.length > 0 ||
     activeFilters.regions.length > 0 ||
     activeFilters.countries.length > 0 ||
+    Boolean(activeFilters.customLocation) ||
     activeFilters.benefits.length > 0;
 
   function updateFilters(nextFilters: JobFilterState) {
@@ -236,6 +250,7 @@ export function FilterBar() {
       spokenLanguages: [],
       regions: [],
       countries: [],
+      customLocation: undefined,
       benefits: [],
       minSalary: undefined,
       maxSalary: undefined,
